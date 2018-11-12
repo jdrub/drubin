@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/drubin/static/css/main.3d415245.chunk.css"
   },
   {
-    "revision": "2ab5de84ef2cc70d51bda60033f3382e",
+    "revision": "156d984e03c48cfffae171f73f1dcfc7",
     "url": "/drubin/index.html"
   }
 ];
