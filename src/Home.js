@@ -5,21 +5,21 @@ import MainPhoto from './mainPhoto.jpg';
 export default () => {
     return (
         <AppContainer>
-                <Row>
-                    <Tile color="#FCD4E4" />
-                    <Tile color="#CFF6F4" />
-                    <Tile color="#FFFCD7" />
-                </Row>
-                <Row>
-                    <Tile color="#F4ADCA" />
-                    <PhotoTile color="#9FE0DD" imgSrc={MainPhoto} />
-                    <Tile color="#FFFAB5" />
-                </Row>
-                <Row>
-                    <Tile color="#E593B4" />
-                    <Tile color="#75B6B4" />
-                    <Tile color="#FFF9A4" />
-                </Row>
+            <Row>
+                <Tile color="#FCD4E4" />
+                <Tile color="#CFF6F4" />
+                <Tile color="#FFFCD7" />
+            </Row>
+            <Row>
+                <Tile color="#F4ADCA" />
+                <PhotoTile color="#9FE0DD" imgSrc={MainPhoto} />
+                <Tile color="#FFFAB5" />
+            </Row>
+            <Row>
+                <Tile color="#E593B4" />
+                <Tile color="#75B6B4" />
+                <Tile color="#FFF9A4" />
+            </Row>
         </AppContainer>
     );
 }
@@ -32,7 +32,9 @@ const AppContainer = styled.div`
     transform: translateX(-50%) translateY(-50%);
 
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+
+    white-space: nowrap;
 `;
 
 const Tile = styled.div`
