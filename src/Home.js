@@ -46,11 +46,6 @@ const Tile = styled.div`
 
     margin: 10px;
 
-    border-radius: 2px;
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
-
     background-color: ${p => p.color};
     ${p => p.imgSrc
         ? css`
