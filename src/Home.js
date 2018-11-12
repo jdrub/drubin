@@ -5,7 +5,6 @@ import MainPhoto from './mainPhoto.jpg';
 export default () => {
     return (
         <AppContainer>
-            <div>
                 <Row>
                     <Tile color="#FCD4E4" />
                     <Tile color="#CFF6F4" />
@@ -21,21 +20,19 @@ export default () => {
                     <Tile color="#75B6B4" />
                     <Tile color="#FFF9A4" />
                 </Row>
-            </div>
         </AppContainer>
     );
 }
 
 
 const AppContainer = styled.div`
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+
     display: flex;
     flex-direction: row;
-
-    justify-content: center;
-    align-items: center;
-
-    height: 100vh;
-    width: 100vw;
 `;
 
 const Tile = styled.div`
