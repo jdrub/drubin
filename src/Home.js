@@ -49,8 +49,8 @@ const Tile = styled.div`
     ${p => p.imgSrc
         ? css`
             background-image: url(${p.imgSrc});
-            background-size: 660px;
-            background-position: 65% 35%;
+            background-size: 290px;
+            background-position: 49% 31%;
             `
         : ''
     }
