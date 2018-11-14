@@ -1,24 +1,38 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
+import React, { useState } from 'react';
+import styled, { css, keyframes } from 'styled-components';
 import MainPhoto from './mainPhoto.jpg';
+import BezierEasing from 'bezier-easing';
+import { range } from 'lodash';
+const ANIMATION_DRUATION_SECONDS = 2;
+const ANIMATION_DELAY_INTERVAL = 200;
+const ROTATION_AMOUNT = 180;
+
+const handleClick = (shouldAnimate, setShouldAnimate) => {
+    if (!shouldAnimate) {
+        setShouldAnimate(true);
+        setTimeout(() => setShouldAnimate(false), ANIMATION_DRUATION_SECONDS*1000 + 1050 + 3000);
+    }
+}
 
 export default () => {
+    const [shouldAnimate, seShouldAnimate] = useState(false);
+
     return (
         <AppContainer>
             <Row>
-                <Tile color="#FCD4E4" />
-                <Tile color="#CFF6F4" />
-                <Tile color="#FFFCD7" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={0} color="#FCD4E4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#CFF6F4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={2} color="#FFFCD7" />
             </Row>
             <Row>
-                <Tile color="#F4ADCA" />
-                <PhotoTile color="#9FE0DD" imgSrc={MainPhoto} />
-                <Tile color="#FFFAB5" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#F4ADCA" />
+                <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick(shouldAnimate, seShouldAnimate)} color="#9FE0DD" imgSrc={MainPhoto} />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#FFFAB5" />
             </Row>
             <Row>
-                <Tile color="#E593B4" />
-                <Tile color="#75B6B4" />
-                <Tile color="#FFF9A4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={2} color="#E593B4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#75B6B4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={4} color="#FFF9A4" />
             </Row>
         </AppContainer>
     );
@@ -35,6 +49,51 @@ const AppContainer = styled.div`
     flex-direction: column;
 
     white-space: nowrap;
+`;
+
+const rotationCurve = BezierEasing(0.455, 0.03, 0.515, 0.955);
+const rotationEasingFunc = (step) => rotationCurve(step/100)*ROTATION_AMOUNT;
+
+const scaleCurve = BezierEasing(0.645, 0.045, 0.355, 1);
+const scaleEasingFunc = (step) => {
+    // return 1;
+    // if (step < 50) {
+    //     return 1 - scaleCurve(step/100)
+    // } else {
+    //     return 1 - scaleCurve((100-step)/100)
+    // }
+
+    return 1 - scaleCurve(step/100)*.2
+}
+
+const radiusCurve = BezierEasing(0.165, 0.84, 0.44, 1);
+const radiusEasingFunc = (step) => radiusCurve(step/100)*50;
+
+const rotateSteps =
+    range(1,101)
+    .reduce(
+        (str, step) => `
+        ${str}
+        ${step}% {
+            transform: rotate(${rotationEasingFunc(step)}deg) scale(${scaleEasingFunc(step)});
+            border-radius: ${radiusEasingFunc(step)}%;
+        }`, '');
+
+const photoShrinkRadiusSteps =
+range(1,101)
+.reduce(
+    (str, step) => `
+    ${str}
+    ${step}% {
+        border-radius: ${radiusEasingFunc(step)}%;
+    }`, '');
+
+const photoShrinkRadius = keyframes`
+    ${photoShrinkRadiusSteps}
+`;
+
+const rotate = keyframes`
+    ${rotateSteps}
 `;
 
 const Tile = styled.div`
@@ -54,10 +113,21 @@ const Tile = styled.div`
             `
         : ''
     }
+
+    ${p => p.shouldAnimate
+        ? css`animation: ${rotate} ${ANIMATION_DRUATION_SECONDS}s linear ${p.animationPosition * ANIMATION_DELAY_INTERVAL}ms forwards;`
+        : ''
+    }
 `;
 
 const PhotoTile = styled(Tile)`
     position: relative;
+
+    overflow: hidden;
+
+    &:hover {
+        cursor: pointer;
+    }
 
     &:before {
         position: absolute;
@@ -72,6 +142,11 @@ const PhotoTile = styled(Tile)`
 
         background-color: ${p => p.color};
         opacity: 0.4;
+    }
+
+    ${p => p.shouldAnimate
+        ? css`animation: ${photoShrinkRadius} ${ANIMATION_DRUATION_SECONDS}s linear ${p.animationPosition * ANIMATION_DELAY_INTERVAL}ms forwards;`
+        : ''
     }
 `;
 

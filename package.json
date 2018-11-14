@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "http://jdrub.github.io/drubin",
   "dependencies": {
+    "bezier-easing": "^2.1.0",
+    "lodash": "^4.17.11",
     "react": "^16.7.0-alpha.0",
     "react-dom": "^16.7.0-alpha.0",
     "react-scripts": "2.1.1",
