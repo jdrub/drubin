@@ -3,36 +3,46 @@ import styled, { css, keyframes } from 'styled-components';
 import MainPhoto from './mainPhoto.jpg';
 import BezierEasing from 'bezier-easing';
 import { range } from 'lodash';
+
+const EXPAND_ANIMATION_DURATION_SECONDS = .5;
+const EXPAND_CIRCLE_SCALE = 0.9;
+
+const CIRCLE_SCALE = 0.8;
+
 const ANIMATION_DRUATION_SECONDS = 2;
 const ANIMATION_DELAY_INTERVAL = 200;
 const ROTATION_AMOUNT = 180;
 
-const handleClick = (shouldAnimate, setShouldAnimate) => {
-    if (!shouldAnimate) {
-        setShouldAnimate(true);
-        setTimeout(() => setShouldAnimate(false), ANIMATION_DRUATION_SECONDS*1000 + 1050 + 3000);
-    }
-}
-
 export default () => {
-    const [shouldAnimate, seShouldAnimate] = useState(false);
+    const [shouldAnimate, setShouldAnimate] = useState(false);
+    const [shouldExpand, setShouldExpand] = useState(false);
+
+    const handleClick = () => {
+        if (!shouldAnimate) {
+            setShouldAnimate(true);
+            setTimeout(() => {
+                // setShouldAnimate(false);
+                setShouldExpand(true);
+            }, ANIMATION_DRUATION_SECONDS*1000 + 1050);
+        }
+    }
 
     return (
         <AppContainer>
             <Row>
-                <Tile shouldAnimate={shouldAnimate} animationPosition={0} color="#FCD4E4" />
-                <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#CFF6F4" />
-                <Tile shouldAnimate={shouldAnimate} animationPosition={2} color="#FFFCD7" />
+                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={0} color="#FCD4E4" />
+                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={1} color="#CFF6F4" />
+                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={2} color="#FFFCD7" />
             </Row>
             <Row>
-                <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#F4ADCA" />
-                <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick(shouldAnimate, seShouldAnimate)} color="#9FE0DD" imgSrc={MainPhoto} />
-                <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#FFFAB5" />
+                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={1} color="#F4ADCA" />
+                <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick()} color="#9FE0DD" imgSrc={MainPhoto} />
+                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={3} color="#FFFAB5" />
             </Row>
             <Row>
-                <Tile shouldAnimate={shouldAnimate} animationPosition={2} color="#E593B4" />
-                <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#75B6B4" />
-                <Tile shouldAnimate={shouldAnimate} animationPosition={4} color="#FFF9A4" />
+                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={2} color="#E593B4" />
+                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={3} color="#75B6B4" />
+                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={4} color="#FFF9A4" />
             </Row>
         </AppContainer>
     );
@@ -63,7 +73,7 @@ const scaleEasingFunc = (step) => {
     //     return 1 - scaleCurve((100-step)/100)
     // }
 
-    return 1 - scaleCurve(step/100)*.2
+    return 1 - scaleCurve(step/100)*(1-CIRCLE_SCALE)
 }
 
 const radiusCurve = BezierEasing(0.165, 0.84, 0.44, 1);
@@ -96,6 +106,18 @@ const rotate = keyframes`
     ${rotateSteps}
 `;
 
+const expand = keyframes`
+    from {
+        transform: scale(${CIRCLE_SCALE});
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(${EXPAND_CIRCLE_SCALE});
+        opacity: 0;
+    }
+`;
+
 const Tile = styled.div`
     display: inline-block;
 
@@ -116,6 +138,14 @@ const Tile = styled.div`
 
     ${p => p.shouldAnimate
         ? css`animation: ${rotate} ${ANIMATION_DRUATION_SECONDS}s linear ${p.animationPosition * ANIMATION_DELAY_INTERVAL}ms forwards;`
+        : ''
+    }
+
+    ${p => p.shouldExpand
+        ? css`
+            animation: ${expand} ${EXPAND_ANIMATION_DURATION_SECONDS}s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+            border-radius: 50%;
+            `
         : ''
     }
 `;
