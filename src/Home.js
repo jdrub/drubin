@@ -4,8 +4,7 @@ import MainPhoto from './mainPhoto.jpg';
 import BezierEasing from 'bezier-easing';
 import { range } from 'lodash';
 
-const EXPAND_ANIMATION_DURATION_SECONDS = .5;
-const EXPAND_CIRCLE_SCALE = 0.9;
+const FADE_IN_DURATION_SECONDS = .5;
 
 const CIRCLE_SCALE = 0.8;
 
@@ -15,14 +14,14 @@ const ROTATION_AMOUNT = 180;
 
 export default () => {
     const [shouldAnimate, setShouldAnimate] = useState(false);
-    const [shouldExpand, setShouldExpand] = useState(false);
+    const [shouldShowText, setShouldShowText] = useState(false);
 
     const handleClick = () => {
         if (!shouldAnimate) {
             setShouldAnimate(true);
             setTimeout(() => {
                 // setShouldAnimate(false);
-                setShouldExpand(true);
+                setShouldShowText(true);
             }, ANIMATION_DRUATION_SECONDS*1000 + 1050);
         }
     }
@@ -30,19 +29,27 @@ export default () => {
     return (
         <AppContainer>
             <Row>
-                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={0} color="#FCD4E4" />
-                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={1} color="#CFF6F4" />
-                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={2} color="#FFFCD7" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={0} color="#FCD4E4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#CFF6F4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={2} color="#FFFCD7" />
             </Row>
             <Row>
-                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={1} color="#F4ADCA" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#F4ADCA">
+                    <TileContents shouldShowText={shouldShowText}>
+                        About
+                    </TileContents>
+                </Tile>
                 <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick()} color="#9FE0DD" imgSrc={MainPhoto} />
-                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={3} color="#FFFAB5" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#FFFAB5">
+                    <TileContents shouldShowText={shouldShowText}>
+                        Projects
+                    </TileContents>
+                </Tile>
             </Row>
             <Row>
-                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={2} color="#E593B4" />
-                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={3} color="#75B6B4" />
-                <Tile shouldAnimate={shouldAnimate} shouldExpand={shouldExpand} animationPosition={4} color="#FFF9A4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={2} color="#E593B4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#75B6B4" />
+                <Tile shouldAnimate={shouldAnimate} animationPosition={4} color="#FFF9A4" />
             </Row>
         </AppContainer>
     );
@@ -80,21 +87,22 @@ const radiusCurve = BezierEasing(0.165, 0.84, 0.44, 1);
 const radiusEasingFunc = (step) => radiusCurve(step/100)*50;
 
 const rotateSteps =
-    range(1,101)
+    range(0,101)
     .reduce(
         (str, step) => `
         ${str}
         ${step}% {
-            transform: rotate(${rotationEasingFunc(step)}deg) scale(${scaleEasingFunc(step)});
+            transform: rotate(${rotationEasingFunc(step)}deg) scale(${scaleEasingFunc(step)}) translateZ(0);
             border-radius: ${radiusEasingFunc(step)}%;
         }`, '');
 
 const photoShrinkRadiusSteps =
-range(1,101)
+range(0,101)
 .reduce(
     (str, step) => `
     ${str}
     ${step}% {
+        transform: translateZ(0);
         border-radius: ${radiusEasingFunc(step)}%;
     }`, '');
 
@@ -106,14 +114,12 @@ const rotate = keyframes`
     ${rotateSteps}
 `;
 
-const expand = keyframes`
+const fadeIn = keyframes`
     from {
-        transform: scale(${CIRCLE_SCALE});
         opacity: 1;
     }
 
     to {
-        transform: scale(${EXPAND_CIRCLE_SCALE});
         opacity: 0;
     }
 `;
@@ -127,6 +133,7 @@ const Tile = styled.div`
     margin: 10px;
 
     background-color: ${p => p.color};
+
     ${p => p.imgSrc
         ? css`
             background-image: url(${p.imgSrc});
@@ -141,9 +148,9 @@ const Tile = styled.div`
         : ''
     }
 
-    ${p => p.shouldExpand
+    ${p => p.shouldShowText
         ? css`
-            animation: ${expand} ${EXPAND_ANIMATION_DURATION_SECONDS}s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+            animation: ${fadeIn} ${FADE_IN_DURATION_SECONDS}s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
             border-radius: 50%;
             `
         : ''
@@ -172,6 +179,8 @@ const PhotoTile = styled(Tile)`
 
         background-color: ${p => p.color};
         opacity: 0.4;
+
+        -webkit-mask-image: -webkit-radial-gradient(white, black);
     }
 
     ${p => p.shouldAnimate
@@ -180,4 +189,41 @@ const PhotoTile = styled(Tile)`
     }
 `;
 
-const Row = styled.div``;
+const textAppear = keyframes`
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+`;
+
+const TileContents = styled.div`
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    transform: rotate(180deg) ;
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 26px;
+
+    ${p => p.shouldShowText
+        ? css`
+            animation: ${textAppear} 0.25s linear forwards
+            &:hover {
+                cursor: pointer;
+            }
+            `
+        : ''
+    }
+`;
+
+const Row = styled.div`
+    display: flex
+`;
