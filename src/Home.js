@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import MainPhoto from './mainPhoto.jpg';
+import SpriteSheet from './combined.png';
+
 import BezierEasing from 'bezier-easing';
 import { range } from 'lodash';
 const ANIMATION_DRUATION_SECONDS = 2;
@@ -26,7 +28,9 @@ export default () => {
             </Row>
             <Row>
                 <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#F4ADCA" />
-                <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick(shouldAnimate, seShouldAnimate)} color="#9FE0DD" imgSrc={MainPhoto} />
+                <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick(shouldAnimate, seShouldAnimate)} color="#9FE0DD" imgSrc={MainPhoto}>
+                    <WalkingAnimation />
+                </PhotoTile>
                 <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#FFFAB5" />
             </Row>
             <Row>
@@ -148,6 +152,25 @@ const PhotoTile = styled(Tile)`
         ? css`animation: ${photoShrinkRadius} ${ANIMATION_DRUATION_SECONDS}s linear ${p.animationPosition * ANIMATION_DELAY_INTERVAL}ms forwards;`
         : ''
     }
+`;
+
+const spriteAnim = keyframes`
+    from {
+        background-position-x: 0;
+    }
+
+    to {
+        background-position-x: -1650px;
+    }
+`;
+
+const WalkingAnimation = styled.div`
+    background-image: url(${SpriteSheet});
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 150px;
+    height: 150px;
+    animation: ${spriteAnim} 1s steps(11) infinite;
 `;
 
 const Row = styled.div``;
