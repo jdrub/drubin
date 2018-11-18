@@ -12,7 +12,7 @@ const ROTATION_AMOUNT = 180;
 const handleClick = (shouldAnimate, setShouldAnimate) => {
     if (!shouldAnimate) {
         setShouldAnimate(true);
-        setTimeout(() => setShouldAnimate(false), ANIMATION_DRUATION_SECONDS*1000 + 1050 + 3000);
+        setTimeout(() => setShouldAnimate(false), ANIMATION_DRUATION_SECONDS*1000 + 1050 + 100000);
     }
 }
 
@@ -28,9 +28,13 @@ export default () => {
             </Row>
             <Row>
                 <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#F4ADCA" />
-                <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick(shouldAnimate, seShouldAnimate)} color="#9FE0DD" imgSrc={MainPhoto}>
-                    <WalkingAnimation />
-                </PhotoTile>
+                <PhotoTileContainer>
+                    <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick(shouldAnimate, seShouldAnimate)} color="#9FE0DD" imgSrc={MainPhoto}>
+                        <AnimationContainer shouldAnimate={shouldAnimate}>
+                            <WalkingAnimation />
+                        </AnimationContainer>
+                    </PhotoTile>
+                </PhotoTileContainer>
                 <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#FFFAB5" />
             </Row>
             <Row>
@@ -125,7 +129,7 @@ const Tile = styled.div`
 `;
 
 const PhotoTile = styled(Tile)`
-    position: relative;
+    
 
     overflow: hidden;
 
@@ -134,11 +138,8 @@ const PhotoTile = styled(Tile)`
     }
 
     &:before {
-        position: absolute;
         display: block;
 
-        top:0;
-        left:0;
         width:100%;
         height:100%;
 
@@ -164,6 +165,41 @@ const spriteAnim = keyframes`
     }
 `;
 
+const fadeIn = keyframes`
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+`;
+
+const rotateAnim = keyframes`
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+`;
+
+const AnimationContainer = styled.div`
+    opacity: 0;
+    ${p => p.shouldAnimate
+        ? css`animation: ${fadeIn} 0.5s ease-in forwards;`
+        : ''
+    }
+
+    opacity: 1;
+    position: absolute;
+    top: -136px;
+    transform-origin: 50% 225px;
+    animation: ${rotateAnim} 8s linear infinite;
+    z-index: 2;
+`;
+
 const WalkingAnimation = styled.div`
     background-image: url(${SpriteSheet});
     background-repeat: no-repeat;
@@ -171,6 +207,11 @@ const WalkingAnimation = styled.div`
     width: 150px;
     height: 150px;
     animation: ${spriteAnim} 1s steps(11) infinite;
+`;
+
+const PhotoTileContainer = styled.div`
+display: inline-block;
+position: relative;
 `;
 
 const Row = styled.div``;
