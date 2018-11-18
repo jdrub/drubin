@@ -29,7 +29,9 @@ export default () => {
             <Row>
                 <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#F4ADCA" />
                 <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick(shouldAnimate, seShouldAnimate)} color="#9FE0DD" imgSrc={MainPhoto}>
-                    <WalkingAnimation />
+                    <AnimationContainer shouldAnimate={shouldAnimate}>
+                        <WalkingAnimation />
+                    </AnimationContainer>
                 </PhotoTile>
                 <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#FFFAB5" />
             </Row>
@@ -161,6 +163,24 @@ const spriteAnim = keyframes`
 
     to {
         background-position-x: -1650px;
+    }
+`;
+
+const fadeIn = keyframes`
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+`;
+const AnimationContainer = styled.div`
+    opacity: 0;
+    ${
+        p => p.shouldAnimate
+            ? css`animation: ${fadeIn} 1s ease-in forwards;`
+            : ''
     }
 `;
 
