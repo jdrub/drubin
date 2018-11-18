@@ -12,7 +12,7 @@ const ROTATION_AMOUNT = 180;
 const handleClick = (shouldAnimate, setShouldAnimate) => {
     if (!shouldAnimate) {
         setShouldAnimate(true);
-        setTimeout(() => setShouldAnimate(false), ANIMATION_DRUATION_SECONDS*1000 + 1050 + 3000);
+        setTimeout(() => setShouldAnimate(false), ANIMATION_DRUATION_SECONDS*1000 + 1050 + 5000);
     }
 }
 
