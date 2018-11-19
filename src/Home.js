@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import MainPhoto from './mainPhoto.jpg';
-import SpriteSheet from './combined.png';
+// import SpriteSheet from './combined.png';
+import SpriteSheet from './spritesheet.png';
 
 import BezierEasing from 'bezier-easing';
 import { range } from 'lodash';
@@ -12,7 +13,7 @@ const ROTATION_AMOUNT = 180;
 const handleClick = (shouldAnimate, setShouldAnimate) => {
     if (!shouldAnimate) {
         setShouldAnimate(true);
-        setTimeout(() => setShouldAnimate(false), ANIMATION_DRUATION_SECONDS*1000 + 1050 + 5000);
+        setTimeout(() => setShouldAnimate(false), ANIMATION_DRUATION_SECONDS*1000 + 1050 + 7000);
     }
 }
 
@@ -29,9 +30,11 @@ export default () => {
             <Row>
                 <Tile shouldAnimate={shouldAnimate} animationPosition={1} color="#F4ADCA" />
                 <PhotoTile shouldAnimate={shouldAnimate} animationPosition={2} onClick={() => handleClick(shouldAnimate, seShouldAnimate)} color="#9FE0DD" imgSrc={MainPhoto}>
-                    <AnimationContainer shouldAnimate={shouldAnimate}>
-                        <WalkingAnimation />
-                    </AnimationContainer>
+                    <RotateContainer>
+                        <AnimationContainer shouldAnimate={shouldAnimate}>
+                            <WalkingAnimation />
+                        </AnimationContainer>
+                    </RotateContainer>
                 </PhotoTile>
                 <Tile shouldAnimate={shouldAnimate} animationPosition={3} color="#FFFAB5" />
             </Row>
@@ -162,7 +165,7 @@ const spriteAnim = keyframes`
     }
 
     to {
-        background-position-x: -1650px;
+        background-position-x: -2700px;
     }
 `;
 
@@ -175,6 +178,27 @@ const fadeIn = keyframes`
         opacity: 1;
     }
 `;
+
+const rotate360 = keyframes`
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+`;
+
+const RotateContainer = styled.div`
+    transform-origin: 150px 226px;
+    height: 300px;
+    width: 300px;
+    animation: ${rotate360} 5s linear infinite;
+    position: absolute;
+    bottom: 0;
+    left: -50%;
+`;
+
 const AnimationContainer = styled.div`
     opacity: 0;
     ${
@@ -188,9 +212,9 @@ const WalkingAnimation = styled.div`
     background-image: url(${SpriteSheet});
     background-repeat: no-repeat;
     background-size: cover;
-    width: 150px;
-    height: 150px;
-    animation: ${spriteAnim} 1s steps(11) infinite;
+    width: 300px;
+    height: 300px;
+    animation: ${spriteAnim} 1s steps(9) infinite;
 `;
 
 const Row = styled.div``;
